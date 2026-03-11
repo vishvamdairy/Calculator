@@ -9,7 +9,8 @@
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2611/2611158.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
@@ -187,10 +188,9 @@
     </div>
 
     <script>
-        // Service Worker Registration for PWA functionality
+        // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log("Service Worker Registered"));
+            navigator.serviceWorker.register('sw.js').then(() => console.log("Service Worker Registered"));
         }
 
         let calculatedAvailableCream = 0;
@@ -202,7 +202,6 @@
         }
 
         function calculate() {
-            // Raw Inputs
             const mVol = parseFloat(document.getElementById('mVol').value) || 0;
             const mFat = parseFloat(document.getElementById('mFat').value) || 0;
             const mSnf = parseFloat(document.getElementById('mSnf').value) || 0;
@@ -212,14 +211,12 @@
             const extraExp = parseFloat(document.getElementById('extraExp').value) || 0;
             const skimFat = 0.05;
 
-            // Selling Rates
             const sRateP = parseFloat(document.getElementById('sRateP').value) || 0;
             const sRateD = parseFloat(document.getElementById('sRateD').value) || 0;
             const sRateG = parseFloat(document.getElementById('sRateG').value) || 0;
             const sRateS = parseFloat(document.getElementById('sRateS').value) || 0;
             const sRateB = parseFloat(document.getElementById('sRateB').value) || 0;
 
-            // Targets
             const pInpL = parseFloat(document.getElementById('pInpL').value) || 0;
             const pFatT = parseFloat(document.getElementById('pFat').value) || 0;
             const dInpL = parseFloat(document.getElementById('dInpL').value) || 0;
@@ -228,12 +225,10 @@
             const sFatT = parseFloat(document.getElementById('sFatTarget').value) || 0;
             const bInpL = parseFloat(document.getElementById('bInpL').value) || 0;
 
-            // 1. Separation
             const totalCream = (mVol * (mFat - skimFat)) / (cFat - skimFat);
             const totalSkim = mVol - totalCream;
             document.getElementById('totalCreamDisp').innerText = `क्रीम: ${totalCream.toFixed(1)}L`;
 
-            // 2. Mix Req
             const pCreamReq = ((pFatT - skimFat) / (cFat - skimFat)) * pInpL;
             const pSkimReq = pInpL - pCreamReq;
             const pQty = pInpL * ((pFatT + mSnf) / 51);
@@ -244,7 +239,6 @@
             const sCreamReq = ((sFatT - skimFat) / (cFat - skimFat)) * sVolT;
             const sSkimReq = sVolT - sCreamReq;
 
-            // 3. Inventory Logic
             calculatedAvailableCream = Math.max(0, totalCream - pCreamReq - dCreamReq - sCreamReq);
             calculatedAvailableSkim = Math.max(0, totalSkim - pSkimReq - dSkimReq - sSkimReq);
            
@@ -262,7 +256,6 @@
             const bQty = skimToUseForB; 
             const finalSkim = calculatedAvailableSkim - skimToUseForB;
 
-            // 4. Economics
             const rawCost = mVol * mRate;
             const procCost = mVol * pCostPerL;
             const totalInv = rawCost + procCost + extraExp;
@@ -271,7 +264,6 @@
             const netProfit = revenue - totalInv;
             const pLitre = mVol > 0 ? (netProfit / mVol) : 0;
 
-            // UI Updates
             document.getElementById('outP').innerText = pQty.toFixed(1) + " Kg";
             document.getElementById('outD').innerText = dInpL.toFixed(0) + " L";
             document.getElementById('outG').innerText = gheeQty.toFixed(1) + " Kg";
