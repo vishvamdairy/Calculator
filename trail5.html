@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>विश्वम डेअरी - स्मार्ट डॅशबोर्ड</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2611/2611158.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%); font-family: 'Hind', sans-serif; color: #1e293b; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid #ffffff; }
+        .input-field { width: 100%; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; font-weight: 700; color: #2563eb; transition: all 0.3s; }
+        .input-field:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .label-text { font-size: 0.95rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-black text-blue-900 mb-2">विश्वम डेअरी</h1>
+            <p class="text-slate-500 font-bold uppercase text-sm tracking-widest">उत्पादन, ताक आणि अचूक नफा व्यवस्थापन</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="space-y-6">
+                <div class="glass-card">
+                    <h2 class="text-xl font-black text-blue-800 mb-6 flex items-center gap-2">📥 कच्चा माल (Input)</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="label-text text-blue-600">एकूण दूध (Litre)</label>
+                            <input type="number" id="mVol" value="1000" class="input-field" oninput="calculate()">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="label-text">फॅट (%)</label><input type="number" id="mFat" value="4.5" step="0.1" class="input-field" oninput="calculate()"></div>
+                            <div><label class="label-text">SNF (%)</label><input type="number" id="mSnf" value="8.5" step="0.1" class="input-field" oninput="calculate()"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="label-text">खरेदी दर (₹/L)</label><input type="number" id="mRate" value="45" class="input-field" oninput="calculate()"></div>
+                            <div><label class="label-text">क्रीम फॅट (%)</label><input type="number" id="cFat" value="50" class="input-field" oninput="calculate()"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card border-red-100">
+                    <h2 class="text-xl font-black text-red-800 mb-6 flex items-center gap-2">💸 खर्च (Expenses)</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="label-text">प्रोसेस खर्च (₹ प्रति लिटर)</label>
+                            <input type="number" id="pCostPerL" value="2.0" step="0.1" class="input-field border-red-200" oninput="calculate()">
+                        </div>
+                        <div>
+                            <label class="label-text font-black text-red-600">Daily Extra Expense (₹)</label>
+                            <input type="number" id="extraExp" value="0" class="input-field border-red-300 bg-red-50" oninput="calculate()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card bg-slate-800 text-white">
+                    <h2 class="text-lg font-bold mb-4">💰 विक्री दर (Selling Rates)</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-xs opacity-60">पनीर (Kg)</label><input type="number" id="sRateP" value="350" class="w-full bg-slate-700 border-none rounded-lg p-2 text-white font-bold" oninput="calculate()"></div>
+                        <div><label class="text-xs opacity-60">दही (L)</label><input type="number" id="sRateD" value="80" class="w-full bg-slate-700 border-none rounded-lg p-2 text-white font-bold" oninput="calculate()"></div>
+                        <div><label class="text-xs opacity-60">तूप (Kg)</label><input type="number" id="sRateG" value="700" class="w-full bg-slate-700 border-none rounded-lg p-2 text-white font-bold" oninput="calculate()"></div>
+                        <div><label class="text-xs opacity-60">दूध (L)</label><input type="number" id="sRateS" value="45" class="w-full bg-slate-700 border-none rounded-lg p-2 text-white font-bold" oninput="calculate()"></div>
+                        <div class="col-span-2"><label class="text-xs opacity-60">ताक / Buttermilk (L)</label><input type="number" id="sRateB" value="30" class="w-full bg-slate-700 border-none rounded-lg p-2 text-white font-bold" oninput="calculate()"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="glass-card shadow-xl">
+                    <h2 class="text-2xl font-black text-slate-800 mb-8 flex items-center gap-3">
+                        🛠️ उत्पादन नियोजन
+                        <span id="totalCreamDisp" class="ml-auto text-sm bg-blue-100 text-blue-700 px-4 py-1 rounded-full">क्रीम: 0L</span>
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-6 rounded-2xl bg-blue-50 border border-blue-100">
+                            <h3 class="font-black text-blue-800 mb-4">🧀 पनीर उत्पादन</h3>
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div><label class="text-[10px] font-bold">दूध लिटर</label><input type="number" id="pInpL" value="500" class="input-field" oninput="calculate()"></div>
+                                <div><label class="text-[10px] font-bold">टार्गेट फॅट %</label><input type="number" id="pFat" value="4.0" step="0.1" class="input-field" oninput="calculate()"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-sm font-bold bg-white p-3 rounded-lg">
+                                <span class="text-slate-500">उत्पादन:</span> <span id="outP" class="text-blue-700 text-lg">0 Kg</span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-indigo-50 border border-indigo-100">
+                            <h3 class="font-black text-indigo-800 mb-4">🍶 दही उत्पादन</h3>
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div><label class="text-[10px] font-bold">दूध लिटर</label><input type="number" id="dInpL" value="200" class="input-field" oninput="calculate()"></div>
+                                <div><label class="text-[10px] font-bold">टार्गेट फॅट %</label><input type="number" id="dFat" value="3.0" step="0.1" class="input-field" oninput="calculate()"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-sm font-bold bg-white p-3 rounded-lg">
+                                <span class="text-slate-500">उत्पादन:</span> <span id="outD" class="text-indigo-700 text-lg">0 L</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-6 rounded-2xl bg-orange-50 border border-orange-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-black text-orange-800">🧈 तूप नियोजन</h3>
+                            <p class="text-[10px] text-orange-600 font-bold" id="availableCreamLabel">उपलब्ध क्रीम: 0 L</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="relative">
+                                <label class="label-text">तूप बनवण्यासाठी क्रीम (L)</label>
+                                <input type="number" id="gheeCreamTarget" class="input-field border-orange-300" oninput="calculate()">
+                                <button onclick="useAllCream()" class="absolute right-2 top-8 text-[10px] bg-orange-500 text-white px-2 py-2 rounded-lg font-bold">All</button>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="bg-white p-3 rounded-xl border border-orange-200 flex-1 text-center">
+                                    <p class="text-[10px] font-bold opacity-60">तूप उत्पादन</p>
+                                    <p id="outG" class="text-xl font-black text-orange-700">0 Kg</p>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl border border-orange-200 flex-1 text-center">
+                                    <p class="text-[10px] font-bold opacity-60">शिल्लक क्रीम</p>
+                                    <p id="remCream" class="text-xl font-black text-slate-600">0 L</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-6 rounded-2xl bg-teal-50 border border-teal-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-black text-teal-800">🥛 ताक उत्पादन (Buttermilk)</h3>
+                            <p class="text-[10px] text-teal-600 font-bold" id="availableSkimLabel">उपलब्ध स्किम्ड: 0 L</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                            <div>
+                                <label class="label-text">किती लिटर स्किम्ड दुधाचे ताक करायचे?</label>
+                                <input type="number" id="bInpL" value="100" class="input-field border-teal-200" oninput="calculate()">
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-teal-100">
+                                <p class="flex justify-between text-sm font-bold"><span>ताक उत्पादन:</span> <span id="outB" class="text-teal-700">0 L</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-100">
+                            <h3 class="font-black text-emerald-800 mb-4 text-sm">दूध विक्री नियोजन</h3>
+                            <div class="grid grid-cols-2 gap-3 mb-2">
+                                <div><label class="text-[10px] font-bold">लिटर</label><input type="number" id="sVolTarget" value="100" class="input-field border-emerald-200" oninput="calculate()"></div>
+                                <div><label class="text-[10px] font-bold">फॅट %</label><input type="number" id="sFatTarget" value="2.0" step="0.1" class="input-field border-emerald-200" oninput="calculate()"></div>
+                            </div>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-slate-100 border border-slate-200 flex flex-col justify-center text-center">
+                            <p class="text-xs font-black uppercase text-slate-500 mb-1">एकूण शिल्लक स्किम्ड (Dead Stock)</p>
+                            <p id="outS" class="text-3xl font-black text-slate-800">0 L</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-5 bg-red-50 border border-red-100 rounded-2xl flex justify-between items-center">
+                            <div>
+                                <p class="text-xs font-black uppercase text-red-600">एकूण खर्च</p>
+                                <p id="resTotalExp" class="text-2xl font-black text-red-800">₹ 0</p>
+                            </div>
+                            <div class="text-right text-[10px] font-bold text-red-400">
+                                <p id="breakdownExp">Raw: 0 | Proc: 0 | Ext: 0</p>
+                            </div>
+                        </div>
+                        <div class="p-5 bg-blue-900 text-white rounded-2xl shadow-lg flex justify-between items-center">
+                            <div>
+                                <p class="text-xs font-black uppercase opacity-60">निव्वळ नफा (Net Profit)</p>
+                                <p id="resNetProfit" class="text-3xl font-black">₹ 0</p>
+                            </div>
+                            <div class="text-right">
+                                <p id="profitPerL" class="text-lg font-black text-blue-300">₹ 0.00</p>
+                                <p class="text-[10px] opacity-60">नफा प्रति लिटर</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Service Worker Registration for PWA functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log("Service Worker Registered"));
+        }
+
+        let calculatedAvailableCream = 0;
+        let calculatedAvailableSkim = 0;
+
+        function useAllCream() {
+            document.getElementById('gheeCreamTarget').value = calculatedAvailableCream.toFixed(2);
+            calculate();
+        }
+
+        function calculate() {
+            // Raw Inputs
+            const mVol = parseFloat(document.getElementById('mVol').value) || 0;
+            const mFat = parseFloat(document.getElementById('mFat').value) || 0;
+            const mSnf = parseFloat(document.getElementById('mSnf').value) || 0;
+            const mRate = parseFloat(document.getElementById('mRate').value) || 0;
+            const cFat = parseFloat(document.getElementById('cFat').value) || 50;
+            const pCostPerL = parseFloat(document.getElementById('pCostPerL').value) || 0;
+            const extraExp = parseFloat(document.getElementById('extraExp').value) || 0;
+            const skimFat = 0.05;
+
+            // Selling Rates
+            const sRateP = parseFloat(document.getElementById('sRateP').value) || 0;
+            const sRateD = parseFloat(document.getElementById('sRateD').value) || 0;
+            const sRateG = parseFloat(document.getElementById('sRateG').value) || 0;
+            const sRateS = parseFloat(document.getElementById('sRateS').value) || 0;
+            const sRateB = parseFloat(document.getElementById('sRateB').value) || 0;
+
+            // Targets
+            const pInpL = parseFloat(document.getElementById('pInpL').value) || 0;
+            const pFatT = parseFloat(document.getElementById('pFat').value) || 0;
+            const dInpL = parseFloat(document.getElementById('dInpL').value) || 0;
+            const dFatT = parseFloat(document.getElementById('dFat').value) || 0;
+            const sVolT = parseFloat(document.getElementById('sVolTarget').value) || 0;
+            const sFatT = parseFloat(document.getElementById('sFatTarget').value) || 0;
+            const bInpL = parseFloat(document.getElementById('bInpL').value) || 0;
+
+            // 1. Separation
+            const totalCream = (mVol * (mFat - skimFat)) / (cFat - skimFat);
+            const totalSkim = mVol - totalCream;
+            document.getElementById('totalCreamDisp').innerText = `क्रीम: ${totalCream.toFixed(1)}L`;
+
+            // 2. Mix Req
+            const pCreamReq = ((pFatT - skimFat) / (cFat - skimFat)) * pInpL;
+            const pSkimReq = pInpL - pCreamReq;
+            const pQty = pInpL * ((pFatT + mSnf) / 51);
+
+            const dCreamReq = ((dFatT - skimFat) / (cFat - skimFat)) * dInpL;
+            const dSkimReq = dInpL - dCreamReq;
+
+            const sCreamReq = ((sFatT - skimFat) / (cFat - skimFat)) * sVolT;
+            const sSkimReq = sVolT - sCreamReq;
+
+            // 3. Inventory Logic
+            calculatedAvailableCream = Math.max(0, totalCream - pCreamReq - dCreamReq - sCreamReq);
+            calculatedAvailableSkim = Math.max(0, totalSkim - pSkimReq - dSkimReq - sSkimReq);
+           
+            document.getElementById('availableCreamLabel').innerText = `उपलब्ध क्रीम: ${calculatedAvailableCream.toFixed(2)} L`;
+            document.getElementById('availableSkimLabel').innerText = `उपलब्ध स्किम्ड: ${calculatedAvailableSkim.toFixed(1)} L`;
+
+            let gheeCreamToUse = parseFloat(document.getElementById('gheeCreamTarget').value) || 0;
+            if (gheeCreamToUse > calculatedAvailableCream) gheeCreamToUse = calculatedAvailableCream;
+           
+            const remainingCream = calculatedAvailableCream - gheeCreamToUse;
+            const gheeQty = (gheeCreamToUse * (cFat / 100)) * 0.84;
+           
+            let skimToUseForB = bInpL;
+            if (skimToUseForB > calculatedAvailableSkim) skimToUseForB = calculatedAvailableSkim;
+            const bQty = skimToUseForB; 
+            const finalSkim = calculatedAvailableSkim - skimToUseForB;
+
+            // 4. Economics
+            const rawCost = mVol * mRate;
+            const procCost = mVol * pCostPerL;
+            const totalInv = rawCost + procCost + extraExp;
+
+            const revenue = (pQty * sRateP) + (dInpL * sRateD) + (gheeQty * sRateG) + (sVolT * sRateS) + (bQty * sRateB);
+            const netProfit = revenue - totalInv;
+            const pLitre = mVol > 0 ? (netProfit / mVol) : 0;
+
+            // UI Updates
+            document.getElementById('outP').innerText = pQty.toFixed(1) + " Kg";
+            document.getElementById('outD').innerText = dInpL.toFixed(0) + " L";
+            document.getElementById('outG').innerText = gheeQty.toFixed(1) + " Kg";
+            document.getElementById('outB').innerText = bQty.toFixed(0) + " L";
+            document.getElementById('remCream').innerText = remainingCream.toFixed(2) + " L";
+            document.getElementById('outS').innerText = finalSkim.toFixed(0) + " L";
+
+            document.getElementById('resTotalExp').innerText = "₹ " + Math.round(totalInv).toLocaleString();
+            document.getElementById('breakdownExp').innerText = `Raw: ${Math.round(rawCost)} | Proc: ${Math.round(procCost)} | Ext: ${Math.round(extraExp)}`;
+            document.getElementById('resNetProfit').innerText = "₹ " + Math.round(netProfit).toLocaleString();
+            document.getElementById('profitPerL').innerText = "₹ " + pLitre.toFixed(2);
+        }
+
+        window.onload = calculate;
+    </script>
+</body>
+</html>
